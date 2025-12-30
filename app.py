@@ -4,6 +4,7 @@ from transformers import pipeline
 # Load summarization model once
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
+# Function to summarize text or uploaded file
 def summarize_text(text, file):
     # Read text from file if uploaded
     if file is not None:
@@ -24,8 +25,32 @@ def summarize_text(text, file):
 
     return summary[0]["summary_text"]
 
-# Gradio UI
-with gr.Blocks() as demo:
+# Gradio Blocks UI
+with gr.Blocks(css="""
+    /* Input box styling - Light Red */
+    #input-box textarea {
+        background-color: #FFCCCC;
+        color: black;
+        font-size: 18px;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    /* Output box styling - Green */
+    #output-box textarea {
+        background-color: #00FF00;
+        color: black;
+        font-size: 18px;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    /* Button styling */
+    button {
+        font-size: 16px;
+        font-weight: bold;
+    }
+""") as demo:
 
     gr.Markdown(
         """
@@ -62,32 +87,5 @@ with gr.Blocks() as demo:
         outputs=output_summary
     )
 
-# Launch with custom CSS
-demo.launch(
-    share=True,
-    css="""
-        /* Input box styling - Light Red */
-        #input-box textarea {
-            background-color: #FFCCCC;  /* Light Red */
-            color: black;
-            font-size: 18px;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        /* Output box styling - Green */
-        #output-box textarea {
-            background-color: #00FF00;
-            color: black;
-            font-size: 18px;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        /* Button styling */
-        button {
-            font-size: 16px;
-            font-weight: bold;
-        }
-    """
-)
+# Launch app with shareable link
+demo.launch(share=True)
